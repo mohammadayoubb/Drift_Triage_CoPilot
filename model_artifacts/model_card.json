@@ -1,0 +1,38 @@
+{
+  "model_name": "bank_marketing_classifier",
+  "model_version": "prototype_colab",
+  "dataset": "UCI Bank Marketing - bank-additional-full.csv",
+  "task": "Binary classification: predict whether a client subscribes to a term deposit",
+  "target": "y",
+  "positive_class": "yes",
+  "model_type": "LogisticRegression",
+  "operating_threshold": 0.385,
+  "threshold_rule": "highest threshold meeting recall >= 0.75 on validation set",
+  "test_metrics": {
+    "auc": 0.8012724656823436,
+    "recall": 0.7478448275862069,
+    "precision": 0.24653641207815274,
+    "f1": 0.37082554100988513,
+    "accuracy": 0.7141296431172615
+  },
+  "data_handling": {
+    "duration": "Dropped because it leaks target information",
+    "pdays": "Kept as numeric feature",
+    "pdays_was_999": "Added as sentinel flag",
+    "unknown": "Kept as real category"
+  },
+  "artifact_hash": {
+    "bank_marketing_pipeline.joblib": "f03c93cca3a9938691c014029afa0159cf98cf2d0f25dab7b86c6b5b3c29890c"
+  },
+  "environment_fingerprint": {
+    "python_version": "3.12.13",
+    "platform": "Linux-6.6.113+-x86_64-with-glibc2.35",
+    "sklearn_version": "1.6.1",
+    "pandas_version": "2.2.2"
+  },
+  "known_limitations": [
+    "Positive class is imbalanced at roughly 11%",
+    "Precision is low because the threshold is tuned to satisfy recall >= 0.75",
+    "Prototype created in Colab and must be moved into the production repository"
+  ]
+}
