@@ -3,19 +3,20 @@ routes_registry.py
 
 This file defines registry-related API endpoints.
 
-These endpoints expose safe registry information and guarded promotion behavior.
-No model should be promoted to Production without passing the gate and receiving
-human approval.
+It exposes:
+- Current Production model status
+- Guarded promotion endpoint
 """
 
 from fastapi import APIRouter
 
 from service.registry.mlflow_registry import MLflowRegistry
+from service.config.settings import Settings
 
 router = APIRouter()
 
 registry = MLflowRegistry(
-    registered_model_name="bank_marketing_classifier"
+    registered_model_name=Settings.MODEL_NAME
 )
 
 
@@ -33,8 +34,7 @@ def promote_model(candidate_version: str, approved: bool = False):
     """
     Guarded promotion endpoint.
 
-    In the final project, this should only be called after the agent receives
-    human approval from the dashboard.
+    This endpoint must only allow Production changes after human approval.
     """
 
     return registry.promote_to_production(
