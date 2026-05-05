@@ -1,11 +1,15 @@
 """
 mlflow_registry.py
 
-This file defines the registry interface for model registration and promotion.
+This file manages MLflow registry operations.
 
-For now, it is a safe placeholder. Later, it will connect to MLflow and enforce
-the promotion checklist before any model is moved to Production.
+It enforces a guarded promotion rule:
+No model version can be promoted unless human approval is present.
 """
+
+import mlflow
+
+from service.config.settings import Settings
 
 
 class MLflowRegistry:
@@ -15,33 +19,62 @@ class MLflowRegistry:
 
     def __init__(self, registered_model_name: str):
         self.registered_model_name = registered_model_name
+        mlflow.set_tracking_uri("file:./mlruns")
 
     def get_current_production_model(self) -> dict:
         """
         Return current production model metadata.
 
-        Placeholder until MLflow integration is added.
+        If no Production model exists yet, return a clear state.
         """
+
+        client = mlflow.tracking.MlflowClient()
+
+        versions = client.search_model_versions(
+            f"name='{self.registered_model_name}'"
+        )
+
+        production_versions = [
+            version for version in versions
+            if version.current_stage == "Production"
+        ]
+
+        if not production_versions:
+            return {
+                "model_name": self.registered_model_name,
+                "model_version": None,
+                "stage": "None",
+                "message": "No Production model is currently set."
+            }
+
+        production = production_versions[0]
 
         return {
             "model_name": self.registered_model_name,
-            "model_version": "v1",
-            "stage": "Production"
+            "model_version": production.version,
+            "stage": production.current_stage,
+            "run_id": production.run_id
         }
 
     def validate_promotion_gate(self, candidate_version: str) -> bool:
         """
-        Validate whether a candidate model is allowed to be promoted.
-
-        This will later enforce:
-        - model artifact exists
-        - schema exists
-        - model card exists
-        - metrics pass checklist
-        - human approval exists
+        Validate whether a candidate model can be promoted.
         """
 
-        return bool(candidate_version)
+        if not candidate_version:
+            return False
+
+        client = mlflow.tracking.MlflowClient()
+
+        try:
+            version = client.get_model_version(
+                name=self.registered_model_name,
+                version=candidate_version
+            )
+        except Exception:
+            return False
+
+        return version is not None
 
     def promote_to_production(self, candidate_version: str, approved: bool) -> dict:
         """
@@ -57,8 +90,17 @@ class MLflowRegistry:
         if not self.validate_promotion_gate(candidate_version):
             return {
                 "status": "rejected",
-                "reason": "Promotion gate failed."
+                "reason": "Promotion gate failed or model version does not exist."
             }
+
+        client = mlflow.tracking.MlflowClient()
+
+        client.transition_model_version_stage(
+            name=self.registered_model_name,
+            version=candidate_version,
+            stage="Production",
+            archive_existing_versions=True
+        )
 
         return {
             "status": "approved",
