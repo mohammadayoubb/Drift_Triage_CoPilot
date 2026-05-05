@@ -23,9 +23,7 @@ class MLflowRegistry:
 
     def get_current_production_model(self) -> dict:
         """
-        Return current production model metadata.
-
-        If no Production model exists yet, return a clear state.
+        Return current Production model metadata.
         """
 
         client = mlflow.tracking.MlflowClient()
@@ -59,6 +57,15 @@ class MLflowRegistry:
     def validate_promotion_gate(self, candidate_version: str) -> bool:
         """
         Validate whether a candidate model can be promoted.
+
+        Current gate checks:
+        - Candidate version must exist in MLflow
+
+        Later gate checks:
+        - Metrics pass checklist
+        - Schema exists
+        - Model card exists
+        - Human approval is fresh
         """
 
         if not candidate_version:
