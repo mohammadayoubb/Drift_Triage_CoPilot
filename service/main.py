@@ -3,15 +3,16 @@ main.py
 
 This is the entry point for the FastAPI model service.
 
-It connects all API routes into one application.
+It connects all API routes into one FastAPI application.
 """
 
 from fastapi import FastAPI
 
 from service.api.routes_predictions import router as predictions_router
 from service.api.routes_health import router as health_router
-from service.api.routes_drift import router as drift_router
 from service.api.routes_registry import router as registry_router
+from service.api.routes_drift import router as drift_router
+from service.api.routes_test_payloads import router as test_payloads_router
 
 app = FastAPI(
     title="Bank Marketing Model Service",
@@ -19,8 +20,9 @@ app = FastAPI(
     version="0.1.0"
 )
 
-# Register API routes
+# Register routes
 app.include_router(health_router, tags=["health"])
 app.include_router(predictions_router, tags=["predictions"])
-app.include_router(drift_router, tags=["drift"])
 app.include_router(registry_router, tags=["registry"])
+app.include_router(drift_router, tags=["drift"])
+app.include_router(test_payloads_router, tags=["testing"])
