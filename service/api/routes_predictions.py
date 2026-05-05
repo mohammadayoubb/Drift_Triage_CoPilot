@@ -20,11 +20,8 @@ from service.config.settings import Settings
 router = APIRouter()
 
 # Load model once when this module starts
-loader = ModelLoader(
-    model_path=Settings.MODEL_PATH,
-    metadata_path=Settings.METADATA_PATH
-).load()
-
+# NEW (MLflow-based loader)
+loader = ModelLoader().load()
 predictor = ModelPredictor(
     pipeline=loader.pipeline,
     threshold=loader.threshold,
