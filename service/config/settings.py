@@ -27,9 +27,9 @@ class Settings:
 
     # Drift webhook (agent endpoint)
     AGENT_WEBHOOK_URL = os.getenv(
-        "AGENT_WEBHOOK_URL",
-        "http://agent:8001/drift"
-    )
+    "AGENT_WEBHOOK_URL",
+    "http://127.0.0.1:8001/drift"
+)
 
     # Drift window size
     DRIFT_WINDOW_SIZE = int(
