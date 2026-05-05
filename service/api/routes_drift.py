@@ -1,12 +1,17 @@
 """
 routes_drift.py
 
-This file exposes a local drift report endpoint.
+This file exposes drift monitoring endpoints.
 
-It is useful for testing drift detection before connecting the agent webhook.
+It allows the model platform to:
+- Check current drift status
+- Optionally create a drift event
+- Optionally notify the agent when severity changes
 """
 
 from fastapi import APIRouter
+
+from service.drift.drift_service import DriftService
 
 router = APIRouter()
 
@@ -14,13 +19,22 @@ router = APIRouter()
 @router.get("/drift/status")
 def drift_status():
     """
-    Placeholder drift status endpoint.
-
-    The full implementation will later load reference data and recent prediction
-    data, run the drift monitor, and optionally notify the agent.
+    Build and return the current drift report without notifying the agent.
     """
 
-    return {
-        "status": "not_configured",
-        "message": "Drift monitor endpoint is ready, but reference/live data wiring is not complete yet."
-    }
+    drift_service = DriftService()
+
+    return drift_service.check_drift(notify_agent=False)
+
+
+@router.post("/drift/check")
+def check_drift_and_notify():
+    """
+    Build a drift report and notify the agent only if severity changed.
+
+    This is the endpoint that represents the platform-to-agent drift trigger.
+    """
+
+    drift_service = DriftService()
+
+    return drift_service.check_drift(notify_agent=True)
