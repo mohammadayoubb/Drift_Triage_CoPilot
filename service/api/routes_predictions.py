@@ -3,26 +3,26 @@ routes_predictions.py
 
 This file defines the prediction API endpoint.
 
-It:
-- Receives request
-- Validates input (via Pydantic)
-- Calls predictor
-- Returns structured response
+It validates requests, runs predictions, stores prediction records, and returns
+a structured response.
 """
 
 from fastapi import APIRouter
-from uuid import uuid4
 
 from service.validation.request_schema import PredictionRequest, PredictionResponse
 from service.model.predictor import ModelPredictor
 from service.model.loader import ModelLoader
+from service.storage.prediction_store import PredictionStore
+from service.utils.id_generator import generate_request_id
+from service.utils.time_utils import get_utc_timestamp
+from service.config.settings import Settings
 
 router = APIRouter()
 
-# Load model once at startup
+# Load model once when this module starts
 loader = ModelLoader(
-    model_path="model_artifacts/bank_marketing_pipeline.joblib",
-    metadata_path="model_artifacts/model_metadata.json"
+    model_path=Settings.MODEL_PATH,
+    metadata_path=Settings.METADATA_PATH
 ).load()
 
 predictor = ModelPredictor(
@@ -32,6 +32,8 @@ predictor = ModelPredictor(
     model_version=loader.model_version
 )
 
+prediction_store = PredictionStore()
+
 
 @router.post("/predict", response_model=PredictionResponse)
 def predict(request: PredictionRequest):
@@ -39,16 +41,28 @@ def predict(request: PredictionRequest):
     Main prediction endpoint.
     """
 
-    # Generate unique request ID (useful for logging and debugging)
-    request_id = str(uuid4())
+    request_id = generate_request_id()
+    timestamp = get_utc_timestamp()
 
-    # Convert validated request into dictionary
+    # API-safe names for predictor
     request_data = request.model_dump(by_alias=False)
 
-    # Run prediction
+    # Original training column names for logging and drift monitoring
+    logged_features = request.model_dump(by_alias=True)
+
     result = predictor.predict(request_data)
 
-    # Attach request ID
+    prediction_store.append({
+        "request_id": request_id,
+        "timestamp": timestamp,
+        "features": logged_features,
+        "prediction": result["prediction"],
+        "probability_yes": result["probability_yes"],
+        "threshold_used": result["threshold_used"],
+        "model_name": result["model_name"],
+        "model_version": result["model_version"]
+    })
+
     result["request_id"] = request_id
 
     return result
