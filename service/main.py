@@ -13,7 +13,7 @@ from service.api.routes_health import router as health_router
 from service.api.routes_registry import router as registry_router
 from service.api.routes_drift import router as drift_router
 from service.api.routes_test_payloads import router as test_payloads_router
-
+from service.api.routes_queue import router as queue_router
 app = FastAPI(
     title="Bank Marketing Model Service",
     description="FastAPI service for serving the Bank Marketing classifier.",
@@ -26,3 +26,4 @@ app.include_router(predictions_router, tags=["predictions"])
 app.include_router(registry_router, tags=["registry"])
 app.include_router(drift_router, tags=["drift"])
 app.include_router(test_payloads_router, tags=["testing"])
+app.include_router(queue_router, tags=["queue"])
