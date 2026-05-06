@@ -13,7 +13,7 @@ It surfaces:
 
 import streamlit as st
 
-from dashboard.api_client import (
+from dashboard.api_client import  (
     get_health,
     get_registry_state,
     get_drift_status,

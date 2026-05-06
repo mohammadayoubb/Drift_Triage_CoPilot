@@ -10,6 +10,7 @@ from model_service.model_loader import get_model_status
 from model_service.predict import predict_subscription
 from model_service.schemas import HealthResponse, PredictionRequest, PredictionResponse
 from model_service.webhooks import emit_drift_webhook_if_needed
+from service.api.routes_queue import router as queue_router
 
 configure_logging()
 
@@ -115,3 +116,5 @@ def drift_report(
                 "message": "Drift report failed. Check service logs for details.",
             },
         ) from exc
+    
+    app.include_router(queue_router, tags=["queue"])
