@@ -1,0 +1,66 @@
+# docker-compose.yml
+#
+# Runs the full Drift Triage Co-Pilot stack.
+
+services:
+  redis:
+    image: redis:7
+    container_name: drift-redis
+    ports:
+      - "6379:6379"
+
+  model-service:
+    build: .
+    container_name: drift-model-service
+    ports:
+      - "8000:8000"
+    environment:
+      - AGENT_WEBHOOK_URL=http://agent-service:8001/drift
+      - REDIS_URL=redis://redis:6379/0
+      - DRIFT_WINDOW_SIZE=100
+      - MODEL_PATH=model_artifacts/bank_marketing_pipeline.joblib
+      - METADATA_PATH=model_artifacts/model_metadata.json
+    volumes:
+      - ./data:/app/data
+      - ./model_artifacts:/app/model_artifacts
+      - ./mlruns:/app/mlruns
+    depends_on:
+      - redis
+
+  agent-service:
+    build: .
+    container_name: drift-agent-service
+    command: uvicorn agent.main:app --host 0.0.0.0 --port 8001
+    ports:
+      - "8001:8001"
+    environment:
+      - MODEL_SERVICE_URL=http://model-service:8000
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - redis
+      - model-service
+
+  dashboard:
+    build: .
+    container_name: drift-dashboard
+    command: streamlit run dashboard/app.py --server.port=8501 --server.address=0.0.0.0
+    ports:
+      - "8501:8501"
+    environment:
+      - MODEL_SERVICE_URL=http://model-service:8000
+    depends_on:
+      - model-service
+      - agent-service
+
+  worker:
+    build: .
+    container_name: drift-worker
+    command: python -m async_queue.worker
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - redis
