@@ -10,3 +10,4 @@ requests
 mlflow
 redis
 streamlit
+pytest
