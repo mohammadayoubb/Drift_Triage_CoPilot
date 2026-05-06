@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Environment
+.env
+
+# MLflow local files
+mlruns/
+mlflow.db
+
+# Data files
+data/raw/*
+data/processed/*
+data/reference/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/reference/.gitkeep
+
+# Artifacts
+artifacts/models/*
+artifacts/reports/*
+artifacts/model_cards/*
+artifacts/agent_state/*
+!artifacts/models/.gitkeep
+!artifacts/reports/.gitkeep
+!artifacts/model_cards/.gitkeep
+
+# Editor / OS
+.vscode/
+.DS_Store

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Drift Event v1",
+  "type": "object",
+  "required": [
+    "event_type",
+    "version",
+    "severity",
+    "created_at_utc",
+    "recent_count",
+    "window_size",
+    "report"
+  ],
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "const": "drift_report.severity_changed"
+    },
+    "version": {
+      "type": "string",
+      "const": "v1"
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["none", "warning", "critical"]
+    },
+    "created_at_utc": {
+      "type": "string"
+    },
+    "recent_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "window_size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "report": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}
