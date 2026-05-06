@@ -6,6 +6,7 @@ __pycache__/
 .ruff_cache/
 *.egg-info/
 
+
 # Environment
 .env
 
@@ -33,3 +34,10 @@ artifacts/agent_state/*
 # Editor / OS
 .vscode/
 .DS_Store
+
+
+
+
+
+/data
+scripts/generate_predictions.py
