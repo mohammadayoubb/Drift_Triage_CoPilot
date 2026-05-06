@@ -1,59 +1,50 @@
 """
 main.py
 
-This is the entry point for the agent service.
+Agent service entrypoint.
 
-For now, it receives drift webhooks and creates investigations.
-Later, this will be upgraded into a LangGraph supervisor agent.
+Receives drift events from the model platform and runs the integrated
+investigation workflow.
 """
 
 from fastapi import FastAPI
 
 from agent.schemas.drift_event import DriftEvent
-from agent.storage.investigation_store import InvestigationStore
+from agent.integration.investigation_runner import InvestigationRunner
 
 
 app = FastAPI(
     title="Drift Triage Agent Service",
     description="Agent service for handling drift investigations.",
-    version="0.1.0"
+    version="0.1.0",
 )
 
-investigation_store = InvestigationStore()
+runner = InvestigationRunner()
 
 
 @app.get("/health")
 def health_check():
     """
-    Basic health endpoint for the agent service.
+    Basic health endpoint.
     """
 
     return {
         "status": "ok",
-        "service": "agent_service"
+        "service": "agent_service",
     }
 
 
 @app.post("/drift")
 def receive_drift_event(event: DriftEvent):
     """
-    Receive drift event from the model platform and create an investigation.
+    Receive drift event and run integrated investigation flow.
     """
 
-    investigation = {
-        "investigation_id": event.event_id,
-        "event_id": event.event_id,
-        "model_name": event.model_name,
-        "model_version": event.model_version,
-        "severity": event.severity,
-        "affected_features": event.affected_features,
-        "status": "opened",
-        "recommended_action": "pending_triage"
-    }
-
-    investigation_store.append(investigation)
+    investigation = runner.run(event.model_dump())
 
     return {
         "status": "accepted",
-        "investigation_id": investigation["investigation_id"]
+        "investigation_id": investigation["investigation_id"],
+        "recommended_action": investigation["recommended_action"],
+        "human_approval_needed": investigation["human_approval_needed"],
     }
