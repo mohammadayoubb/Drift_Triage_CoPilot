@@ -16,11 +16,10 @@ mlflow.db
 
 # Data files
 data/raw/*
-data/processed/*
-data/reference/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/reference/.gitkeep
+!data/reference/reference_stats.json
 
 # Artifacts — generated at runtime, excluded by default
 artifacts/models/*
@@ -34,6 +33,7 @@ artifacts/agent_state/*
 # Whitelist committed artifacts needed for demo and CI
 !artifacts/models/bank_marketing_pipeline.joblib
 !artifacts/reports/threshold.json
+!artifacts/reports/metrics.json
 !artifacts/reports/input_schema.json
 !artifacts/model_cards/bank_marketing_model_card.md
 
