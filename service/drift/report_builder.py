@@ -84,6 +84,11 @@ class DriftReportBuilder:
 
         current_df = pd.DataFrame(current_features)
 
+        # pdays_was_999 is a derived feature not stored in prediction logs;
+        # recompute it from pdays so the drift monitor can compare against reference.
+        if "pdays_was_999" not in current_df.columns and "pdays" in current_df.columns:
+            current_df["pdays_was_999"] = (current_df["pdays"] == 999).astype(int)
+
         report = self.monitor.run_report(
             reference_df=reference_df,
             current_df=current_df,

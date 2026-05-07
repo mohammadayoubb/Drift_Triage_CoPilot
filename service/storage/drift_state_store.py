@@ -27,9 +27,9 @@ class DriftStateStore:
         """
 
         if not self.path.exists():
-            return None
+            return "LOW"
 
-        with self.path.open("r", encoding="utf-8") as file:
+        with self.path.open("r", encoding="utf-8-sig") as file:
             data = json.load(file)
 
         return data.get("last_severity")

@@ -7,7 +7,9 @@ It enforces a guarded promotion rule:
 No model version can be promoted unless human approval is present.
 """
 
+import json
 import mlflow
+from pathlib import Path
 
 from service.config.settings import Settings
 
@@ -38,12 +40,7 @@ class MLflowRegistry:
         ]
 
         if not production_versions:
-            return {
-                "model_name": self.registered_model_name,
-                "model_version": None,
-                "stage": "None",
-                "message": "No Production model is currently set."
-            }
+            return self._local_model_info()
 
         production = production_versions[0]
 
@@ -53,6 +50,33 @@ class MLflowRegistry:
             "stage": production.current_stage,
             "run_id": production.run_id
         }
+
+    def _local_model_info(self) -> dict:
+        """Fall back to local artifact metadata when no MLflow production model exists."""
+        metrics_path = Path("artifacts/reports/metrics.json")
+        threshold_path = Path("artifacts/reports/threshold.json")
+        try:
+            metrics = json.loads(metrics_path.read_text()) if metrics_path.exists() else {}
+            threshold = json.loads(threshold_path.read_text()) if threshold_path.exists() else {}
+            test = metrics.get("test", {})
+            return {
+                "model_name": self.registered_model_name,
+                "model_version": "v1",
+                "stage": "local",
+                "source": "local artifact",
+                "threshold": threshold.get("threshold"),
+                "auc": test.get("auc"),
+                "recall": test.get("recall"),
+                "f1": test.get("f1"),
+                "message": "Loaded from local artifact (not yet promoted in MLflow).",
+            }
+        except Exception:
+            return {
+                "model_name": self.registered_model_name,
+                "model_version": "v1",
+                "stage": "local",
+                "message": "Loaded from local artifact.",
+            }
 
     def validate_promotion_gate(self, candidate_version: str) -> bool:
         """

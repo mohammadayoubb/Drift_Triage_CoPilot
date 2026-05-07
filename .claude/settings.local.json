@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import requests; print\\(requests.get\\('http://127.0.0.1:8000/health', timeout=3\\).json\\(\\)\\)\")",
+      "Bash(python -c \"import requests; print\\(requests.get\\('http://127.0.0.1:8501', timeout=3\\).status_code\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(pkill -f \"uvicorn service.main\")",
+      "Bash(uvicorn service.main:app --host 0.0.0.0 --port 8000)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\LEGION\\\\Desktop\\\\AIE\\\\Assignments\\\\Week5\\\\Code\\\\drift-triage-copilot\" -Recurse -Name)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\LEGION\\\\Desktop\\\\AIE\\\\Assignments\\\\Week5\\\\Code\\\\drift-triage-copilot\" -Recurse -Depth 3)",
+      "Bash(Select-Object FullName)",
+      "Bash(findstr -i \"langgraph\")",
+      "Bash(echo '{\"last_severity\": \"LOW\"}' > \"c:\\\\Users\\\\LEGION\\\\Desktop\\\\AIE\\\\Assignments\\\\Week5\\\\Code\\\\drift-triage-copilot\\\\data\\\\drift_state.json\")",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://127.0.0.1:8001/health\" -TimeoutSec 3; $r.StatusCode; $r.Content } catch { \"Agent not reachable: $\\($_.Exception.Message\\)\" })",
+      "PowerShell($result = Test-NetConnection -ComputerName 127.0.0.1 -Port 8001 -WarningAction SilentlyContinue; if \\($result.TcpTestSucceeded\\) { \"Agent is UP on :8001\" } else { \"Agent is DOWN on :8001 — nothing listening\" })",
+      "PowerShell(Get-NetTCPConnection -LocalPort 8000,8501 -State Listen -ErrorAction SilentlyContinue | Select-Object LocalPort, OwningProcess | ForEach-Object { $proc = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue; [PSCustomObject]@{Port=$_.LocalPort; PID=$_.OwningProcess; Name=$proc.Name; CMD=\\(Get-CimInstance Win32_Process -Filter \"ProcessId=$\\($_.OwningProcess\\)\" -ErrorAction SilentlyContinue\\).CommandLine} })",
+      "PowerShell(Start-Sleep -Seconds 4; @\\(8000, 8001, 8501\\) | ForEach-Object { $port = $_; try { $r = Invoke-RestMethod \"http://localhost:$port/health\" -TimeoutSec 5; \"PORT $port — OK: $\\($r | ConvertTo-Json -Compress\\)\" } catch { \"PORT $port — $\\($_.Exception.Message\\)\" } })",
+      "PowerShell(Start-Sleep -Seconds 8; @\\(8000, 8001\\) | ForEach-Object { $port = $_; try { $r = Invoke-RestMethod \"http://localhost:$port/health\" -TimeoutSec 8; \"PORT $port — OK: $\\($r | ConvertTo-Json -Compress\\)\" } catch { \"PORT $port — FAIL: $\\($_.Exception.Message\\)\" } })",
+      "PowerShell(docker-compose -f \"c:\\\\Users\\\\LEGION\\\\Desktop\\\\AIE\\\\Assignments\\\\Week5\\\\Code\\\\drift-triage-copilot\\\\docker-compose.yml\" ps)",
+      "PowerShell(curl.exe -s http://localhost:8000/health)",
+      "PowerShell(curl.exe -s http://localhost:8001/health)",
+      "PowerShell([System.IO.File]::WriteAllText\\(\"c:\\\\Users\\\\LEGION\\\\Desktop\\\\AIE\\\\Assignments\\\\Week5\\\\Code\\\\drift-triage-copilot\\\\data\\\\drift_state.json\", '{\"last_severity\": \"LOW\"}', [System.Text.Encoding]::UTF8NoBOM\\); Write-Host \"Written. First bytes:\"; [System.IO.File]::ReadAllBytes\\(\"c:\\\\Users\\\\LEGION\\\\Desktop\\\\AIE\\\\Assignments\\\\Week5\\\\Code\\\\drift-triage-copilot\\\\data\\\\drift_state.json\"\\)[0..5] | ForEach-Object { \"{0:X2}\" -f $_ })",
+      "PowerShell($utf8NoBom = New-Object System.Text.UTF8Encoding\\($false\\); [System.IO.File]::WriteAllText\\(\"c:\\\\Users\\\\LEGION\\\\Desktop\\\\AIE\\\\Assignments\\\\Week5\\\\Code\\\\drift-triage-copilot\\\\data\\\\drift_state.json\", '{\"last_severity\": \"LOW\"}', $utf8NoBom\\); [System.IO.File]::ReadAllBytes\\(\"c:\\\\Users\\\\LEGION\\\\Desktop\\\\AIE\\\\Assignments\\\\Week5\\\\Code\\\\drift-triage-copilot\\\\data\\\\drift_state.json\"\\)[0..3] | ForEach-Object { \"{0:X2}\" -f $_ })",
+      "PowerShell(curl.exe -s \"http://localhost:8000/drift/status\")",
+      "PowerShell(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('status:', d.get\\('report',d\\).get\\('status'\\)\\); print\\('severity:', d.get\\('report',d\\).get\\('severity','-'\\)\\)\")",
+      "PowerShell(curl.exe -s http://localhost:8000/drift/status)",
+      "Bash(dir \"c:\\\\Users\\\\LEGION\\\\Desktop\\\\AIE\\\\Assignments\\\\Week5\\\\Code\\\\drift-triage-copilot\")",
+      "Bash(ls -la \"c:\\\\Users\\\\LEGION\\\\Desktop\\\\AIE\\\\Assignments\\\\Week5\\\\Code\\\\drift-triage-copilot\\\\\")",
+      "Read(//c/Users/LEGION/Desktop/AIE/Assignments/Week5/Code/**)",
+      "Bash(xargs grep -l \"uvicorn\\\\|from src.agent.main import\\\\|ASGI\\\\|main\\(\\)\")",
+      "Bash(docker-compose up *)",
+      "Bash(Start-Sleep -Seconds 5)",
+      "Bash(docker exec *)",
+      "Bash(docker-compose ps *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\LEGION\\Desktop\\AIE\\Assignments\\Week5\\Code\\drift-triage-copilot\\data"
+    ]
+  }
+}

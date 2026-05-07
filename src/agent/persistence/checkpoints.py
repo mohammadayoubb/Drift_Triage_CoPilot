@@ -38,6 +38,12 @@ def get_checkpointer() -> Any:
                 "AGENT_CHECKPOINTER=postgres requires DATABASE_URL to be set."
             )
 
+        # PostgresSaver uses psycopg3 directly (not SQLAlchemy), so strip any
+        # driver prefix: "postgresql+psycopg://..." → "postgresql://..."
+        if "://" in database_url:
+            scheme, rest = database_url.split("://", 1)
+            database_url = f"{scheme.split('+')[0]}://{rest}"
+
         from langgraph.checkpoint.postgres import PostgresSaver
 
         _CHECKPOINTER_CONTEXT = PostgresSaver.from_conn_string(database_url)

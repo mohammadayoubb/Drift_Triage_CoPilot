@@ -60,19 +60,33 @@ class DriftService:
             previous_severity=previous_severity
         )
 
-        self.state_store.set_last_severity(current_severity)
-
-        if notify_agent:
-            webhook_response = self.webhook_client.send_drift_event(event)
-        else:
-            webhook_response = {
-                "skipped": True,
-                "reason": "notify_agent=False"
+        if not notify_agent:
+            # GET /drift/status path — report only, never update state or send webhook
+            return {
+                "report": report,
+                "event_sent": False,
+                "event": event,
+                "webhook_response": {"skipped": True, "reason": "notify_agent=False"},
             }
+
+        # POST /drift/check path — attempt delivery first, save state only on success.
+        # If saved before delivery and the webhook fails, severity gets stuck and
+        # subsequent retries will see no change and never re-fire.
+        try:
+            webhook_response = self.webhook_client.send_drift_event(event)
+            self.state_store.set_last_severity(current_severity)
+            event_sent = True
+        except Exception as exc:
+            webhook_response = {
+                "error": str(exc),
+                "delivered": False,
+                "hint": "Agent service unreachable. Severity state not saved — next check will retry.",
+            }
+            event_sent = False
 
         return {
             "report": report,
-            "event_sent": notify_agent,
+            "event_sent": event_sent,
             "event": event,
-            "webhook_response": webhook_response
+            "webhook_response": webhook_response,
         }

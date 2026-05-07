@@ -45,18 +45,32 @@ def receive_drift_webhook(event: DriftEvent) -> DriftWebhookResponse:
             thread_id=investigation.thread_id,
         )
 
-        updated = update_investigation(
-            investigation.investigation_id,
-            {
+        # When action_node calls interrupt() for CRITICAL drift, graph.invoke()
+        # returns before the node's return statement executes.  The interrupt
+        # payload (which carries recommended_action) is in __interrupt__, not in
+        # the top-level state keys.
+        interrupts = final_state.get("__interrupt__", ())
+        if interrupts:
+            iv = interrupts[0].value if hasattr(interrupts[0], "value") else interrupts[0]
+            update_kwargs = {
+                "status": "approval_pending",
+                "requires_human_approval": True,
+                "recommended_action": iv.get("recommended_action") if isinstance(iv, dict) else None,
+                "triage_result": final_state.get("triage_result"),
+                "comms_summary": None,
+            }
+        else:
+            update_kwargs = {
                 "status": final_state.get("status", "action_recommended"),
                 "triage_result": final_state.get("triage_result"),
                 "recommended_action": final_state.get("recommended_action"),
                 "comms_summary": final_state.get("comms_summary"),
-                "requires_human_approval": final_state.get(
-                    "requires_human_approval",
-                    False,
-                ),
-            },
+                "requires_human_approval": final_state.get("requires_human_approval", False),
+            }
+
+        updated = update_investigation(
+            investigation.investigation_id,
+            update_kwargs,
         )
 
         return DriftWebhookResponse(
@@ -77,6 +91,7 @@ def receive_drift_webhook(event: DriftEvent) -> DriftWebhookResponse:
             detail={
                 "error": "drift_webhook_processing_failed",
                 "message": "Agent failed to process drift webhook.",
+                "detail": str(exc),
             },
         ) from exc
 

@@ -1,92 +1,50 @@
 """
 api_client.py
 
-This file contains helper functions for the Streamlit dashboard.
-
-The dashboard reads state from:
-- model service
-- registry endpoints
-- drift endpoints
-- queue endpoints
-- approval endpoints
+Helper functions for the Streamlit dashboard.
 """
 
 import os
 import requests
 
-
-MODEL_SERVICE_URL = os.getenv(
-    "MODEL_SERVICE_URL",
-    "http://127.0.0.1:8000"
-)
+MODEL_SERVICE_URL = os.getenv("MODEL_SERVICE_URL", "http://127.0.0.1:8000")
+AGENT_SERVICE_URL = os.getenv("AGENT_SERVICE_URL", "http://127.0.0.1:8001")
 
 
-def get_json(path: str) -> dict:
-    """
-    Send GET request to the model service.
-    """
-
-    response = requests.get(
-        f"{MODEL_SERVICE_URL}{path}",
-        timeout=10
-    )
+def _get(url: str) -> dict:
+    response = requests.get(url, timeout=10)
     response.raise_for_status()
     return response.json()
 
 
-def post_json(path: str, payload: dict | None = None, params: dict | None = None) -> dict:
-    """
-    Send POST request to the model service.
-    """
-
-    response = requests.post(
-        f"{MODEL_SERVICE_URL}{path}",
-        json=payload,
-        params=params,
-        timeout=10
-    )
+def _post(url: str, payload: dict | None = None, params: dict | None = None) -> dict:
+    response = requests.post(url, json=payload, params=params, timeout=30)
     response.raise_for_status()
     return response.json()
 
 
 def get_health() -> dict:
-    """
-    Get model service health.
-    """
-
-    return get_json("/health")
+    return _get(f"{MODEL_SERVICE_URL}/health")
 
 
 def get_registry_state() -> dict:
-    """
-    Get current Production model state.
-    """
-
-    return get_json("/registry/production")
+    return _get(f"{MODEL_SERVICE_URL}/registry/production")
 
 
 def get_drift_status() -> dict:
-    """
-    Get current drift report.
-    """
+    return _get(f"{MODEL_SERVICE_URL}/drift/status")
 
-    return get_json("/drift/status")
+
+def post_drift_check() -> dict:
+    return _post(f"{MODEL_SERVICE_URL}/drift/check")
 
 
 def get_queue_status() -> dict:
-    """
-    Get queue and DLQ depth.
-    """
-
-    return get_json("/queue/status")
+    return _get(f"{MODEL_SERVICE_URL}/queue/status")
 
 
 def get_pending_approvals() -> dict:
-    """
-    Get pending human approvals.
-    """
-
-    return get_json("/approvals/pending")
+    return _get(f"{MODEL_SERVICE_URL}/approvals/pending")
 
 
 def submit_approval_decision(
@@ -95,15 +53,24 @@ def submit_approval_decision(
     approved_by: str,
     decision_reason: str,
 ) -> dict:
-    """
-    Submit a human approval decision.
-    """
+    return _post(
+        f"{MODEL_SERVICE_URL}/approvals/decision",
+        payload={
+            "approval_id": approval_id,
+            "approved": approved,
+            "approved_by": approved_by,
+            "decision_reason": decision_reason,
+        },
+    )
 
-    payload = {
-        "approval_id": approval_id,
-        "approved": approved,
-        "approved_by": approved_by,
-        "decision_reason": decision_reason,
-    }
 
-    return post_json("/approvals/decision", payload=payload)
+def post_predict(payload: dict) -> dict:
+    return _post(f"{MODEL_SERVICE_URL}/predict", payload=payload)
+
+
+def post_demo_reset() -> dict:
+    return _post(f"{MODEL_SERVICE_URL}/demo/reset")
+
+
+def get_investigations() -> dict:
+    return _get(f"{AGENT_SERVICE_URL}/investigations")

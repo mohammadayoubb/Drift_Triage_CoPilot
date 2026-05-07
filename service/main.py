@@ -15,6 +15,8 @@ from service.api.routes_drift import router as drift_router
 from service.api.routes_test_payloads import router as test_payloads_router
 from service.api.routes_queue import router as queue_router
 from service.api.routes_approvals import router as approvals_router
+from service.api.routes_demo import router as demo_router
+
 app = FastAPI(
     title="Bank Marketing Model Service",
     description="FastAPI service for serving the Bank Marketing classifier.",
@@ -29,3 +31,4 @@ app.include_router(drift_router, tags=["drift"])
 app.include_router(test_payloads_router, tags=["testing"])
 app.include_router(queue_router, tags=["queue"])
 app.include_router(approvals_router, tags=["approvals"])
+app.include_router(demo_router, tags=["demo"])
