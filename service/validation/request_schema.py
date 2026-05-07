@@ -38,9 +38,6 @@ class PredictionRequest(BaseModel):
     euribor3m: float
     nr_employed: float = Field(..., alias="nr.employed")
 
-    # Sentinel flag created during preprocessing
-    pdays_was_999: int = Field(..., ge=0, le=1)
-
     # Categorical features
     job: str
     marital: str

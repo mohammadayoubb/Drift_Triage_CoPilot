@@ -12,11 +12,13 @@ def test_worker_handles_replay_job():
 
     result = worker.handle_job({
         "job_type": "replay_test",
-        "payload": {"model_version": "v1"},
+        "payload": {"investigation_id": "test-inv-001"},
     })
 
     assert result["status"] == "completed"
-    assert result["task"] == "replay_test"
+    assert "metrics" in result
+    assert "auc" in result["metrics"]
+    assert "recall" in result["metrics"]
 
 
 def test_worker_rejects_unknown_job_type():

@@ -8,8 +8,8 @@ from typing import Any
 from uuid import uuid4
 
 from common.paths import INVESTIGATIONS_PATH, ensure_project_dirs
-from agent.schemas.drift_event import DriftEvent
-from agent.schemas.investigation import InvestigationRecord
+from ..schemas.drift_event import DriftEvent
+from ..schemas.investigation import InvestigationRecord
 
 logger = logging.getLogger(__name__)
 

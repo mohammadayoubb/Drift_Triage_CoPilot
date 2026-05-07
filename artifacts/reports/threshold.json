@@ -1,0 +1,5 @@
+{
+  "threshold": 0.385,
+  "rule": "highest threshold with recall >= 0.75",
+  "tuned_on": "validation"
+}

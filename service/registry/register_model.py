@@ -19,12 +19,10 @@ import mlflow.sklearn
 import joblib
 
 
-ARTIFACT_DIR = Path("model_artifacts")
-
-MODEL_PATH = ARTIFACT_DIR / "bank_marketing_pipeline.joblib"
-METADATA_PATH = ARTIFACT_DIR / "model_metadata.json"
-SCHEMA_PATH = ARTIFACT_DIR / "model_schema.json"
-MODEL_CARD_PATH = ARTIFACT_DIR / "model_card.json"
+MODEL_PATH = Path("artifacts/models/bank_marketing_pipeline.joblib")
+METADATA_PATH = Path("artifacts/reports/metrics.json")
+SCHEMA_PATH = Path("artifacts/reports/input_schema.json")
+MODEL_CARD_PATH = Path("artifacts/model_cards/bank_marketing_model_card.md")
 
 REGISTERED_MODEL_NAME = "bank_marketing_classifier"
 MLFLOW_TRACKING_URI = "file:./mlruns"
@@ -47,7 +45,7 @@ def main() -> None:
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
     mlflow.set_experiment("bank_marketing_drift_triage")
 
-    metadata = load_json(METADATA_PATH)
+    metrics = load_json(METADATA_PATH)
     pipeline = joblib.load(MODEL_PATH)
 
     with mlflow.start_run(run_name="register_bank_marketing_classifier") as run:
@@ -55,13 +53,14 @@ def main() -> None:
 
         # Log model parameters
         mlflow.log_param("model_name", REGISTERED_MODEL_NAME)
-        mlflow.log_param("model_type", metadata["model_type"])
-        mlflow.log_param("operating_threshold", metadata["operating_threshold"])
-        mlflow.log_param("threshold_rule", metadata["threshold_rule"])
+        mlflow.log_param("model_type", "LogisticRegression")
+        mlflow.log_param("operating_threshold", metrics.get("test", {}).get("threshold", metrics.get("threshold")))
+        mlflow.log_param("threshold_rule", metrics.get("threshold_rule", "highest threshold with recall >= 0.75"))
 
         # Log metrics
-        for metric_name, metric_value in metadata["test_metrics"].items():
-            mlflow.log_metric(f"test_{metric_name}", metric_value)
+        for metric_name, metric_value in metrics.get("test", {}).items():
+            if isinstance(metric_value, (int, float)):
+                mlflow.log_metric(f"test_{metric_name}", metric_value)
 
         # Log supporting artifacts
         mlflow.log_artifact(str(MODEL_PATH), artifact_path="raw_artifacts")

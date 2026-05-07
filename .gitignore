@@ -22,14 +22,20 @@ data/reference/*
 !data/processed/.gitkeep
 !data/reference/.gitkeep
 
-# Artifacts
+# Artifacts — generated at runtime, excluded by default
 artifacts/models/*
 artifacts/reports/*
 artifacts/model_cards/*
 artifacts/agent_state/*
+# Keep directory stubs
 !artifacts/models/.gitkeep
 !artifacts/reports/.gitkeep
 !artifacts/model_cards/.gitkeep
+# Whitelist committed artifacts needed for demo and CI
+!artifacts/models/bank_marketing_pipeline.joblib
+!artifacts/reports/threshold.json
+!artifacts/reports/input_schema.json
+!artifacts/model_cards/bank_marketing_model_card.md
 
 # Editor / OS
 .vscode/
@@ -39,5 +45,18 @@ artifacts/agent_state/*
 data/approvals.jsonl
 data/test_approvals.jsonl
 
+# Legacy Colab prototype — superseded by artifacts/
+model_artifacts/
 
+# Test runtime data (not fixtures)
+data/test_predictions.jsonl
+data/test_drift_state.json
 
+# Runtime investigation store
+data/investigations.json
+
+# Build archives
+*.zip
+
+# Planning documents (internal, not part of deliverable)
+IMPLEMENTATION_PLAN.md

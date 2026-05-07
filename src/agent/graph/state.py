@@ -18,6 +18,9 @@ class AgentState(TypedDict, total=False):
     drift_event: dict[str, Any]
     severity: str
 
+    # Supervisor routing target — set by supervisor_node, consumed by route_supervisor
+    next: str
+
     triage_result: dict[str, Any]
     recommended_action: dict[str, Any]
     comms_summary: str

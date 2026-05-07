@@ -4,8 +4,8 @@ import logging
 from functools import lru_cache
 from typing import Any
 
-from agent.graph.supervisor import build_supervisor_graph
-from agent.schemas.drift_event import DriftEvent
+from .supervisor import build_supervisor_graph
+from ..schemas.drift_event import DriftEvent
 
 logger = logging.getLogger(__name__)
 

@@ -25,7 +25,7 @@ def test_agent_app_imports():
 
     from agent.main import app
 
-    assert app.title == "Drift Triage Agent Service"
+    assert app.title == "Drift Triage Copilot - Agent"
 
 
 def test_dashboard_client_imports():

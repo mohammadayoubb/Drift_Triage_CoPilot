@@ -35,7 +35,7 @@ class ModelLoader:
         with open(Settings.METADATA_PATH, "r", encoding="utf-8") as file:
             metadata = json.load(file)
 
-        self.threshold = metadata["operating_threshold"]
+        self.threshold = metadata["threshold"]
 
         print("Loaded local sklearn model")
 

@@ -22,7 +22,6 @@ VALID_PAYLOAD = {
     "cons.conf.idx": -36.4,
     "euribor3m": 4.857,
     "nr.employed": 5191.0,
-    "pdays_was_999": 1,
     "job": "admin.",
     "marital": "married",
     "education": "university.degree",
@@ -67,6 +66,18 @@ def test_target_field_is_rejected():
 
     payload = dict(VALID_PAYLOAD)
     payload["y"] = "yes"
+
+    with pytest.raises(ValidationError):
+        PredictionRequest(**payload)
+
+
+def test_pdays_was_999_is_rejected():
+    """
+    pdays_was_999 is computed internally — clients must not send it.
+    """
+
+    payload = dict(VALID_PAYLOAD)
+    payload["pdays_was_999"] = 1
 
     with pytest.raises(ValidationError):
         PredictionRequest(**payload)

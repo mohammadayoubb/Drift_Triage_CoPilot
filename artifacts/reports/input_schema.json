@@ -1,0 +1,104 @@
+{
+  "features": [
+    {
+      "name": "age",
+      "dtype": "int64",
+      "required": true
+    },
+    {
+      "name": "campaign",
+      "dtype": "int64",
+      "required": true
+    },
+    {
+      "name": "pdays",
+      "dtype": "int64",
+      "required": true
+    },
+    {
+      "name": "previous",
+      "dtype": "int64",
+      "required": true
+    },
+    {
+      "name": "emp.var.rate",
+      "dtype": "float64",
+      "required": true
+    },
+    {
+      "name": "cons.price.idx",
+      "dtype": "float64",
+      "required": true
+    },
+    {
+      "name": "cons.conf.idx",
+      "dtype": "float64",
+      "required": true
+    },
+    {
+      "name": "euribor3m",
+      "dtype": "float64",
+      "required": true
+    },
+    {
+      "name": "nr.employed",
+      "dtype": "float64",
+      "required": true
+    },
+    {
+      "name": "pdays_was_999",
+      "dtype": "int64",
+      "required": true
+    },
+    {
+      "name": "job",
+      "dtype": "object",
+      "required": true
+    },
+    {
+      "name": "marital",
+      "dtype": "object",
+      "required": true
+    },
+    {
+      "name": "education",
+      "dtype": "object",
+      "required": true
+    },
+    {
+      "name": "default",
+      "dtype": "object",
+      "required": true
+    },
+    {
+      "name": "housing",
+      "dtype": "object",
+      "required": true
+    },
+    {
+      "name": "loan",
+      "dtype": "object",
+      "required": true
+    },
+    {
+      "name": "contact",
+      "dtype": "object",
+      "required": true
+    },
+    {
+      "name": "month",
+      "dtype": "object",
+      "required": true
+    },
+    {
+      "name": "day_of_week",
+      "dtype": "object",
+      "required": true
+    },
+    {
+      "name": "poutcome",
+      "dtype": "object",
+      "required": true
+    }
+  ]
+}

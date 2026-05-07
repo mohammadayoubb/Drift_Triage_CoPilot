@@ -4,15 +4,15 @@ import logging
 
 from fastapi import APIRouter, HTTPException, status
 
-from agent.graph.runner import run_investigation_graph
-from agent.persistence.investigation_store import (
+from ..graph.runner import run_investigation_graph
+from ..persistence.investigation_store import (
     create_investigation,
     get_investigation,
     list_investigations,
     update_investigation,
 )
-from agent.schemas.drift_event import DriftEvent
-from agent.schemas.investigation import (
+from ..schemas.drift_event import DriftEvent
+from ..schemas.investigation import (
     DriftWebhookResponse,
     InvestigationListResponse,
     InvestigationRecord,

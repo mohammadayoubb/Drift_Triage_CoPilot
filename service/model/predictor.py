@@ -37,7 +37,7 @@ class ModelPredictor:
             "cons.conf.idx": input_data["cons_conf_idx"],
             "euribor3m": input_data["euribor3m"],
             "nr.employed": input_data["nr_employed"],
-            "pdays_was_999": input_data["pdays_was_999"],
+            "pdays_was_999": int(input_data["pdays"] == 999),
             "job": input_data["job"],
             "marital": input_data["marital"],
             "education": input_data["education"],

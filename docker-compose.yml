@@ -1,66 +1,109 @@
 # docker-compose.yml
-#
-# Runs the full Drift Triage Co-Pilot stack.
 
 services:
+
+  postgres:
+    image: postgres:15
+    container_name: drift-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: drift_triage
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   redis:
     image: redis:7
     container_name: drift-redis
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   model-service:
     build: .
     container_name: drift-model-service
+    command: uv run uvicorn service.main:app --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
     environment:
-      - AGENT_WEBHOOK_URL=http://agent-service:8001/drift
+      - PYTHONPATH=/app/src:/app
+      - AGENT_WEBHOOK_URL=http://agent-service:8001/webhooks/drift
       - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=postgresql+psycopg://postgres:postgres@postgres:5432/drift_triage
       - DRIFT_WINDOW_SIZE=100
-      - MODEL_PATH=model_artifacts/bank_marketing_pipeline.joblib
-      - METADATA_PATH=model_artifacts/model_metadata.json
+      - MODEL_PATH=artifacts/models/bank_marketing_pipeline.joblib
+      - METADATA_PATH=artifacts/reports/threshold.json
     volumes:
       - ./data:/app/data
-      - ./model_artifacts:/app/model_artifacts
+      - ./artifacts:/app/artifacts
       - ./mlruns:/app/mlruns
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
 
   agent-service:
     build: .
     container_name: drift-agent-service
-    command: uvicorn agent.main:app --host 0.0.0.0 --port 8001
+    command: uv run uvicorn agent.main:app --host 0.0.0.0 --port 8001
     ports:
       - "8001:8001"
     environment:
+      - PYTHONPATH=/app/src:/app
       - MODEL_SERVICE_URL=http://model-service:8000
       - REDIS_URL=redis://redis:6379/0
+      - AGENT_CHECKPOINTER=postgres
+      - DATABASE_URL=postgresql+psycopg://postgres:postgres@postgres:5432/drift_triage
     volumes:
       - ./data:/app/data
+      - ./artifacts:/app/artifacts
     depends_on:
-      - redis
-      - model-service
-
-  dashboard:
-    build: .
-    container_name: drift-dashboard
-    command: streamlit run dashboard/app.py --server.port=8501 --server.address=0.0.0.0
-    ports:
-      - "8501:8501"
-    environment:
-      - MODEL_SERVICE_URL=http://model-service:8000
-    depends_on:
-      - model-service
-      - agent-service
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
 
   worker:
     build: .
     container_name: drift-worker
-    command: python -m async_queue.worker
+    command: uv run python -m async_queue.worker
     environment:
+      - PYTHONPATH=/app/src:/app
       - REDIS_URL=redis://redis:6379/0
+      - MODEL_PATH=artifacts/models/bank_marketing_pipeline.joblib
+      - METADATA_PATH=artifacts/reports/threshold.json
     volumes:
       - ./data:/app/data
+      - ./artifacts:/app/artifacts
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+
+  dashboard:
+    build: .
+    container_name: drift-dashboard
+    command: uv run streamlit run dashboard/app.py --server.port=8501 --server.address=0.0.0.0
+    ports:
+      - "8501:8501"
+    environment:
+      - PYTHONPATH=/app/src:/app
+      - MODEL_SERVICE_URL=http://model-service:8000
+      - AGENT_SERVICE_URL=http://agent-service:8001
+    depends_on:
+      - model-service
+      - agent-service
+
+volumes:
+  postgres_data:

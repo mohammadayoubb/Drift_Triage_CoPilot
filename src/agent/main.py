@@ -4,7 +4,7 @@ import logging
 
 from fastapi import FastAPI
 
-from agent.api.routes import router
+from .api.routes import router
 from common.logging import configure_logging
 
 configure_logging()
