@@ -47,6 +47,10 @@ def get_pending_approvals() -> dict:
     return _get(f"{MODEL_SERVICE_URL}/approvals/pending")
 
 
+def get_approval_history() -> dict:
+    return _get(f"{MODEL_SERVICE_URL}/approvals/history")
+
+
 def submit_approval_decision(
     approval_id: str,
     approved: bool,
@@ -74,3 +78,14 @@ def post_demo_reset() -> dict:
 
 def get_investigations() -> dict:
     return _get(f"{AGENT_SERVICE_URL}/investigations")
+
+
+def get_candidate_model() -> dict:
+    return _get(f"{MODEL_SERVICE_URL}/registry/candidate")
+
+
+def post_promote_model(candidate_version: str) -> dict:
+    return _post(
+        f"{MODEL_SERVICE_URL}/registry/promote",
+        payload={"candidate_version": candidate_version, "approved": True},
+    )

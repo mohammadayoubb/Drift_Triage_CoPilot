@@ -75,22 +75,65 @@ def run_replay_test(payload: dict) -> dict:
 
 def run_retrain(payload: dict) -> dict:
     """
-    Retrain the model on the current training split.
+    Retrain the model on the current training split, then register the new
+    version in MLflow Staging so the promotion gate can find it.
     Does NOT promote to Production — human approval is required for that.
     """
     investigation_id = payload.get("investigation_id", "unknown")
     logger.info("Starting retrain for investigation %s", investigation_id)
 
     try:
+        import mlflow
         from src.ml.train import train_model
 
+        mlflow.set_tracking_uri("file:./mlruns")
         result = train_model()
-        logger.info("Retrain complete: threshold=%.3f", result.get("threshold", 0))
+        mlflow_run_id = result.get("mlflow_run_id")
+        logger.info("Retrain complete: threshold=%.3f run_id=%s", result.get("threshold", 0), mlflow_run_id)
+
+        # train_model registers the model but leaves it in "None" stage.
+        # Transition it to "Staging" so get_candidate_model() can discover it.
+        model_name = "bank-marketing-classifier"
+        model_version = None
+        try:
+            client = mlflow.tracking.MlflowClient()
+            versions = client.search_model_versions(f"name='{model_name}'")
+            new_version = next(
+                (v for v in versions if v.run_id == mlflow_run_id),
+                None,
+            )
+            if new_version:
+                client.transition_model_version_stage(
+                    name=model_name,
+                    version=new_version.version,
+                    stage="Staging",
+                    archive_existing_versions=False,
+                )
+                model_version = new_version.version
+                logger.info(
+                    "Model version %s transitioned to Staging: run_id=%s",
+                    model_version,
+                    mlflow_run_id,
+                )
+            else:
+                logger.warning("Could not find MLflow version for run_id=%s", mlflow_run_id)
+        except Exception as stage_exc:
+            logger.warning("Could not transition model to Staging: %s", stage_exc)
+
+        test_m = result.get("test") or {}
         return {
             "status": "completed",
-            "mlflow_run_id": result.get("mlflow_run_id"),
+            "mlflow_run_id": mlflow_run_id,
             "threshold": result.get("threshold"),
-            "note": "New model candidate registered. Requires human approval to promote to Production.",
+            "model_version": model_version,
+            "metrics": {
+                "auc":       test_m.get("auc"),
+                "f1":        test_m.get("f1"),
+                "precision": test_m.get("precision"),
+                "recall":    test_m.get("recall"),
+                "threshold": result.get("threshold"),
+            },
+            "note": "Candidate model registered in Staging. Requires human approval to promote to Production.",
         }
     except Exception as exc:
         logger.exception("Retrain failed")

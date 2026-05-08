@@ -51,19 +51,17 @@ def action_node(state: AgentState) -> dict[str, Any]:
             "action_type": "replay_test_set_then_open_retrain_candidate",
             "priority": "high",
             "reason": (
-                "Critical drift detected across numeric and categorical features. "
-                "Replay test set dispatched immediately. "
-                "Retrain and production promotion require human approval."
+                "Critical drift detected. Human approval is required before "
+                "dispatching replay/retrain workflow."
             ),
             "queue_task": "replay_test",
             "touches_production": True,
         }
-        _dispatch_queue_task("replay_test", investigation_id)
 
-        # Pause the graph — human must approve in the dashboard before
-        # any production-touching step (retrain + promote) proceeds.
+        # Do NOT dispatch the queue job here. The job is dispatched only after
+        # human approval via the HIL approval inbox in the dashboard.
         approval = interrupt({
-            "reason": "Critical drift: replay test dispatched. Approve to proceed with retrain.",
+            "reason": "Critical drift: awaiting human approval before replay/retrain dispatch.",
             "investigation_id": investigation_id,
             "recommended_action": recommended_action,
         })

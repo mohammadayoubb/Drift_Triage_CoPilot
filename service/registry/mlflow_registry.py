@@ -61,7 +61,7 @@ class MLflowRegistry:
             test = metrics.get("test", {})
             return {
                 "model_name": self.registered_model_name,
-                "model_version": "v1",
+                "model_version": "1",
                 "stage": "local",
                 "source": "local artifact",
                 "threshold": threshold.get("threshold"),
@@ -73,9 +73,37 @@ class MLflowRegistry:
         except Exception:
             return {
                 "model_name": self.registered_model_name,
-                "model_version": "v1",
+                "model_version": "1",
                 "stage": "local",
                 "message": "Loaded from local artifact.",
+            }
+
+    def get_candidate_model(self) -> dict:
+        """
+        Return the latest Staging (candidate) model version, or null if none registered.
+        """
+        client = mlflow.tracking.MlflowClient()
+        try:
+            versions = client.search_model_versions(
+                f"name='{self.registered_model_name}'"
+            )
+            staging = [v for v in versions if v.current_stage == "Staging"]
+            if not staging:
+                return {
+                    "candidate_version": None,
+                    "message": "No candidate model registered yet — production model unchanged.",
+                }
+            latest = max(staging, key=lambda v: int(v.version))
+            return {
+                "candidate_version": latest.version,
+                "stage": latest.current_stage,
+                "run_id": latest.run_id,
+                "model_name": self.registered_model_name,
+            }
+        except Exception:
+            return {
+                "candidate_version": None,
+                "message": "No candidate model registered yet — production model unchanged.",
             }
 
     def validate_promotion_gate(self, candidate_version: str) -> bool:

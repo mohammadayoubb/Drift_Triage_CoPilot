@@ -6,7 +6,7 @@
 - **Task:** Binary classification
 - **Target:** `y`
 - **Positive class:** client subscribed to a term deposit
-- **Created at UTC:** 2026-05-07T08:06:40.646273+00:00
+- **Created at UTC:** 2026-05-08T13:40:24.306065+00:00
 
 ## Dataset
 
@@ -138,15 +138,15 @@
 
 ## Artifact fingerprints
 
-- **Model artifact path:** `C:\Users\LEGION\Desktop\AIE\Assignments\Week5\Code\drift-triage-copilot\artifacts\models\bank_marketing_pipeline.joblib`
-- **Model artifact SHA256:** `d7c371be39efaa9fcfbf1b61dc57a605703f180349d85091e2f0b12968d8771f`
+- **Model artifact path:** `/app/artifacts/models/bank_marketing_pipeline.joblib`
+- **Model artifact SHA256:** `324d29eebe4492fddd0a6977143baefc7f2ea330e60745ab15ae0de492e03b95`
 
 ## Environment fingerprint
 
 ```json
 {
-  "python": "3.12.3 (tags/v3.12.3:f6650f9, Apr  9 2024, 14:05:25) [MSC v.1938 64 bit (AMD64)]",
-  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.13 (main, Apr 22 2026, 02:08:00) [GCC 14.2.0]",
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
   "pandas": "2.3.3",
   "numpy": "2.4.4",
   "scikit_learn": "1.8.0",

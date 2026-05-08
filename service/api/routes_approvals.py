@@ -63,3 +63,13 @@ def submit_approval_decision(decision: ApprovalDecision):
     """
 
     return approval_service.decide(decision)
+
+
+@router.get("/approvals/history")
+def get_approval_history():
+    """
+    Return all approvals with their final resolved status (most recent first).
+    Each record merges the original request with any decision fields.
+    """
+
+    return {"history": approval_service.list_history()}

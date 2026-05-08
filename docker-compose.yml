@@ -87,6 +87,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./artifacts:/app/artifacts
+      - ./mlruns:/app/mlruns
     depends_on:
       redis:
         condition: service_healthy

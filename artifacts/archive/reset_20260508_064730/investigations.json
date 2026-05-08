@@ -1,0 +1,235 @@
+{
+  "inv_416e7c89c76c": {
+    "investigation_id": "inv_416e7c89c76c",
+    "thread_id": "inv_416e7c89c76c",
+    "status": "approval_pending",
+    "severity": "CRITICAL",
+    "created_at_utc": "2026-05-07T20:05:02+00:00",
+    "updated_at_utc": "2026-05-07T20:05:03+00:00",
+    "drift_event": {
+      "contract_version": "1.0",
+      "event_id": "09f41b0f-31f8-4820-b249-9cdcfb4754f8",
+      "event_time": "2026-05-07T20:05:02.977171+00:00",
+      "model_name": "bank_marketing_classifier",
+      "model_version": "v1",
+      "production_model_version": "v1",
+      "severity": "CRITICAL",
+      "previous_severity": "LOW",
+      "affected_features": [
+        "age",
+        "cons.price.idx",
+        "euribor3m",
+        "contact"
+      ],
+      "drift_type": "mixed",
+      "numeric_drift_summary": {
+        "age": {
+          "psi": 0.11089472660914997,
+          "severity": "MEDIUM"
+        },
+        "campaign": {
+          "psi": 0.05988492156171864,
+          "severity": "LOW"
+        },
+        "pdays": {
+          "psi": 0.0,
+          "severity": "LOW"
+        },
+        "previous": {
+          "psi": 0.0074812640583094125,
+          "severity": "LOW"
+        },
+        "emp.var.rate": {
+          "psi": 0.0426856861365283,
+          "severity": "LOW"
+        },
+        "cons.price.idx": {
+          "psi": 0.15204795812329588,
+          "severity": "MEDIUM"
+        },
+        "cons.conf.idx": {
+          "psi": 0.05291190319301053,
+          "severity": "LOW"
+        },
+        "euribor3m": {
+          "psi": 12.161874561617394,
+          "severity": "HIGH"
+        },
+        "nr.employed": {
+          "psi": 0.04202060190919532,
+          "severity": "LOW"
+        },
+        "pdays_was_999": {
+          "psi": 0.0,
+          "severity": "LOW"
+        }
+      },
+      "categorical_drift_summary": {
+        "job": {
+          "chi_square_statistic": 4.534255667477404,
+          "p_value": 0.951612658751281,
+          "drift_detected": false
+        },
+        "marital": {
+          "chi_square_statistic": 1.5050043875328671,
+          "p_value": 0.6811158028863347,
+          "drift_detected": false
+        },
+        "education": {
+          "chi_square_statistic": 2.988518978426587,
+          "p_value": 0.8860622840632756,
+          "drift_detected": false
+        },
+        "default": {
+          "chi_square_statistic": 0.5799683527732666,
+          "p_value": 0.7482754079056331,
+          "drift_detected": false
+        },
+        "housing": {
+          "chi_square_statistic": 1.6137166721209855,
+          "p_value": 0.44625785845484645,
+          "drift_detected": false
+        },
+        "loan": {
+          "chi_square_statistic": 1.3534735202111736,
+          "p_value": 0.5082729054977138,
+          "drift_detected": false
+        },
+        "contact": {
+          "chi_square_statistic": 48.24226026215899,
+          "p_value": 3.766820628272845e-12,
+          "drift_detected": true
+        },
+        "month": {
+          "chi_square_statistic": 2.2794889648675127,
+          "p_value": 0.9862381785505117,
+          "drift_detected": false
+        },
+        "day_of_week": {
+          "chi_square_statistic": 0.8770138214848902,
+          "p_value": 0.9278351494882934,
+          "drift_detected": false
+        },
+        "poutcome": {
+          "chi_square_statistic": 0.8821603015793016,
+          "p_value": 0.6433411402060388,
+          "drift_detected": false
+        }
+      },
+      "output_drift_summary": {},
+      "rolling_window_size": 100,
+      "reference_stats_version": "reference_v1"
+    },
+    "triage_result": {
+      "severity": "CRITICAL",
+      "rolling_window_size": 100,
+      "affected_features": [
+        "age",
+        "cons.price.idx",
+        "euribor3m",
+        "contact"
+      ],
+      "top_numeric_drift": [
+        {
+          "feature": "euribor3m",
+          "metric": "psi",
+          "value": 12.161874561617394,
+          "severity": "HIGH"
+        },
+        {
+          "feature": "cons.price.idx",
+          "metric": "psi",
+          "value": 0.15204795812329588,
+          "severity": "MEDIUM"
+        },
+        {
+          "feature": "age",
+          "metric": "psi",
+          "value": 0.11089472660914997,
+          "severity": "MEDIUM"
+        },
+        {
+          "feature": "campaign",
+          "metric": "psi",
+          "value": 0.05988492156171864,
+          "severity": "LOW"
+        },
+        {
+          "feature": "cons.conf.idx",
+          "metric": "psi",
+          "value": 0.05291190319301053,
+          "severity": "LOW"
+        }
+      ],
+      "top_categorical_drift": [],
+      "output_drift": {}
+    },
+    "recommended_action": {
+      "action_type": "replay_test_set_then_open_retrain_candidate",
+      "priority": "high",
+      "reason": "Critical drift detected across numeric and categorical features. Replay test set dispatched immediately. Retrain and production promotion require human approval.",
+      "queue_task": "replay_test",
+      "touches_production": true
+    },
+    "comms_summary": null,
+    "requires_human_approval": true
+  },
+  "inv_c0c2c67c9693": {
+    "investigation_id": "inv_c0c2c67c9693",
+    "thread_id": "inv_c0c2c67c9693",
+    "status": "resolved",
+    "severity": "HIGH",
+    "created_at_utc": "2026-05-08T06:44:02+00:00",
+    "updated_at_utc": "2026-05-08T06:44:06+00:00",
+    "drift_event": {
+      "contract_version": "1.0",
+      "event_id": "event-test-1",
+      "event_time": "2026-05-06T07:00:00+00:00",
+      "model_name": "bank_marketing_classifier",
+      "model_version": "v1",
+      "production_model_version": "v1",
+      "severity": "HIGH",
+      "previous_severity": "LOW",
+      "affected_features": [
+        "euribor3m"
+      ],
+      "drift_type": "numeric",
+      "numeric_drift_summary": {
+        "euribor3m": {
+          "psi": 0.2,
+          "severity": "HIGH"
+        }
+      },
+      "categorical_drift_summary": {},
+      "output_drift_summary": {},
+      "rolling_window_size": 40,
+      "reference_stats_version": "reference_v1"
+    },
+    "triage_result": {
+      "severity": "HIGH",
+      "rolling_window_size": 40,
+      "affected_features": [
+        "euribor3m"
+      ],
+      "top_numeric_drift": [
+        {
+          "feature": "euribor3m",
+          "metric": "psi",
+          "value": 0.2,
+          "severity": "HIGH"
+        }
+      ],
+      "top_categorical_drift": [],
+      "output_drift": {}
+    },
+    "recommended_action": {
+      "action_type": "monitor_and_replay_test_set",
+      "priority": "medium",
+      "reason": "High drift detected. Replay test set before deciding on retrain.",
+      "queue_task": "replay_test",
+      "touches_production": false
+    },
+    "comms_summary": "Investigation inv_c0c2c67c9693: severity=HIGH. Top numeric drift: euribor3m. Top categorical drift: none. Recommended action: monitor_and_replay_test_set.",
+    "requires_human_approval": false
+  }
+}

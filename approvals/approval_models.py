@@ -25,6 +25,7 @@ class ApprovalRequest(BaseModel):
     reason: str
     payload: dict[str, Any]
     status: str = "pending"
+    created_at_utc: str = ""
 
 
 class ApprovalDecision(BaseModel):

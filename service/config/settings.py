@@ -38,4 +38,4 @@ class Settings:
 
     # Service info
     SERVICE_NAME = "model_service"
-    MODEL_NAME = "bank_marketing_classifier"
+    MODEL_NAME = "bank-marketing-classifier"

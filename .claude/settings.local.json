@@ -31,7 +31,11 @@
       "Bash(docker-compose up *)",
       "Bash(Start-Sleep -Seconds 5)",
       "Bash(docker exec *)",
-      "Bash(docker-compose ps *)"
+      "Bash(docker-compose ps *)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('dashboard/app.py'\\).read\\(\\)\\); print\\('OK  dashboard/app.py'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('dashboard/app.py', encoding='utf-8'\\).read\\(\\)\\); print\\('OK  dashboard/app.py'\\)\")",
+      "Skill(gsd-code-review)",
+      "Skill(gsd-code-review:*)"
     ],
     "additionalDirectories": [
       "c:\\Users\\LEGION\\Desktop\\AIE\\Assignments\\Week5\\Code\\drift-triage-copilot\\data"

@@ -50,9 +50,13 @@ class DriftMonitor:
             else:
                 severity = "LOW"
 
+            drifted = severity in ("MEDIUM", "HIGH", "SEVERE")
             results[feature] = {
                 "psi": psi_value,
-                "severity": severity
+                "severity": severity,
+                "drifted": bool(drifted),
+                "is_drifted": bool(drifted),
+                "drift_detected": bool(drifted),
             }
 
         return results

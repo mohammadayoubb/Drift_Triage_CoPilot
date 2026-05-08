@@ -1,0 +1,273 @@
+{
+  "inv_42bc4bf7a21e": {
+    "investigation_id": "inv_42bc4bf7a21e",
+    "thread_id": "inv_42bc4bf7a21e",
+    "status": "approval_pending",
+    "severity": "CRITICAL",
+    "created_at_utc": "2026-05-08T07:55:27+00:00",
+    "updated_at_utc": "2026-05-08T07:55:28+00:00",
+    "drift_event": {
+      "contract_version": "1.0",
+      "event_id": "2ee14629-47a8-45c7-ab2f-c2fdbebe7a27",
+      "event_time": "2026-05-08T07:55:27.859659+00:00",
+      "model_name": "bank_marketing_classifier",
+      "model_version": "v1",
+      "production_model_version": "v1",
+      "severity": "CRITICAL",
+      "previous_severity": "LOW",
+      "affected_features": [
+        "age",
+        "cons.price.idx",
+        "euribor3m",
+        "contact"
+      ],
+      "drift_type": "mixed",
+      "numeric_drift_summary": {
+        "age": {
+          "psi": 0.11089472660914997,
+          "severity": "MEDIUM",
+          "drifted": true,
+          "is_drifted": true,
+          "drift_detected": true
+        },
+        "campaign": {
+          "psi": 0.05988492156171864,
+          "severity": "LOW",
+          "drifted": false,
+          "is_drifted": false,
+          "drift_detected": false
+        },
+        "pdays": {
+          "psi": 0.0,
+          "severity": "LOW",
+          "drifted": false,
+          "is_drifted": false,
+          "drift_detected": false
+        },
+        "previous": {
+          "psi": 0.0074812640583094125,
+          "severity": "LOW",
+          "drifted": false,
+          "is_drifted": false,
+          "drift_detected": false
+        },
+        "emp.var.rate": {
+          "psi": 0.0426856861365283,
+          "severity": "LOW",
+          "drifted": false,
+          "is_drifted": false,
+          "drift_detected": false
+        },
+        "cons.price.idx": {
+          "psi": 0.15204795812329588,
+          "severity": "MEDIUM",
+          "drifted": true,
+          "is_drifted": true,
+          "drift_detected": true
+        },
+        "cons.conf.idx": {
+          "psi": 0.05291190319301053,
+          "severity": "LOW",
+          "drifted": false,
+          "is_drifted": false,
+          "drift_detected": false
+        },
+        "euribor3m": {
+          "psi": 12.161874561617394,
+          "severity": "HIGH",
+          "drifted": true,
+          "is_drifted": true,
+          "drift_detected": true
+        },
+        "nr.employed": {
+          "psi": 0.04202060190919532,
+          "severity": "LOW",
+          "drifted": false,
+          "is_drifted": false,
+          "drift_detected": false
+        },
+        "pdays_was_999": {
+          "psi": 0.0,
+          "severity": "LOW",
+          "drifted": false,
+          "is_drifted": false,
+          "drift_detected": false
+        }
+      },
+      "categorical_drift_summary": {
+        "job": {
+          "chi_square": 4.534255667477404,
+          "chi_square_statistic": 4.534255667477404,
+          "p_value": 0.951612658751281,
+          "drift_detected": false,
+          "is_drifted": false,
+          "severity": "LOW"
+        },
+        "marital": {
+          "chi_square": 1.5050043875328671,
+          "chi_square_statistic": 1.5050043875328671,
+          "p_value": 0.6811158028863347,
+          "drift_detected": false,
+          "is_drifted": false,
+          "severity": "LOW"
+        },
+        "education": {
+          "chi_square": 2.988518978426587,
+          "chi_square_statistic": 2.988518978426587,
+          "p_value": 0.8860622840632756,
+          "drift_detected": false,
+          "is_drifted": false,
+          "severity": "LOW"
+        },
+        "default": {
+          "chi_square": 0.5799683527732666,
+          "chi_square_statistic": 0.5799683527732666,
+          "p_value": 0.7482754079056331,
+          "drift_detected": false,
+          "is_drifted": false,
+          "severity": "LOW"
+        },
+        "housing": {
+          "chi_square": 1.6137166721209855,
+          "chi_square_statistic": 1.6137166721209855,
+          "p_value": 0.44625785845484645,
+          "drift_detected": false,
+          "is_drifted": false,
+          "severity": "LOW"
+        },
+        "loan": {
+          "chi_square": 1.3534735202111736,
+          "chi_square_statistic": 1.3534735202111736,
+          "p_value": 0.5082729054977138,
+          "drift_detected": false,
+          "is_drifted": false,
+          "severity": "LOW"
+        },
+        "contact": {
+          "chi_square": 48.24226026215899,
+          "chi_square_statistic": 48.24226026215899,
+          "p_value": 3.766820628272845e-12,
+          "drift_detected": true,
+          "is_drifted": true,
+          "severity": "HIGH"
+        },
+        "month": {
+          "chi_square": 2.2794889648675127,
+          "chi_square_statistic": 2.2794889648675127,
+          "p_value": 0.9862381785505117,
+          "drift_detected": false,
+          "is_drifted": false,
+          "severity": "LOW"
+        },
+        "day_of_week": {
+          "chi_square": 0.8770138214848902,
+          "chi_square_statistic": 0.8770138214848902,
+          "p_value": 0.9278351494882934,
+          "drift_detected": false,
+          "is_drifted": false,
+          "severity": "LOW"
+        },
+        "poutcome": {
+          "chi_square": 0.8821603015793016,
+          "chi_square_statistic": 0.8821603015793016,
+          "p_value": 0.6433411402060388,
+          "drift_detected": false,
+          "is_drifted": false,
+          "severity": "LOW"
+        }
+      },
+      "output_drift_summary": {},
+      "rolling_window_size": 100,
+      "reference_stats_version": "reference_v1"
+    },
+    "triage_result": {
+      "severity": "CRITICAL",
+      "rolling_window_size": 100,
+      "affected_features": [
+        "age",
+        "cons.price.idx",
+        "euribor3m",
+        "contact"
+      ],
+      "top_numeric_drift": [
+        {
+          "feature": "euribor3m",
+          "metric": "psi",
+          "value": 12.161874561617394,
+          "severity": "HIGH"
+        },
+        {
+          "feature": "cons.price.idx",
+          "metric": "psi",
+          "value": 0.15204795812329588,
+          "severity": "MEDIUM"
+        },
+        {
+          "feature": "age",
+          "metric": "psi",
+          "value": 0.11089472660914997,
+          "severity": "MEDIUM"
+        },
+        {
+          "feature": "campaign",
+          "metric": "psi",
+          "value": 0.05988492156171864,
+          "severity": "LOW"
+        },
+        {
+          "feature": "cons.conf.idx",
+          "metric": "psi",
+          "value": 0.05291190319301053,
+          "severity": "LOW"
+        }
+      ],
+      "top_categorical_drift": [
+        {
+          "feature": "contact",
+          "metric": "chi_square",
+          "value": 48.24226026215899,
+          "p_value": 3.766820628272845e-12,
+          "severity": "HIGH"
+        },
+        {
+          "feature": "job",
+          "metric": "chi_square",
+          "value": 4.534255667477404,
+          "p_value": 0.951612658751281,
+          "severity": "LOW"
+        },
+        {
+          "feature": "education",
+          "metric": "chi_square",
+          "value": 2.988518978426587,
+          "p_value": 0.8860622840632756,
+          "severity": "LOW"
+        },
+        {
+          "feature": "month",
+          "metric": "chi_square",
+          "value": 2.2794889648675127,
+          "p_value": 0.9862381785505117,
+          "severity": "LOW"
+        },
+        {
+          "feature": "housing",
+          "metric": "chi_square",
+          "value": 1.6137166721209855,
+          "p_value": 0.44625785845484645,
+          "severity": "LOW"
+        }
+      ],
+      "output_drift": {}
+    },
+    "recommended_action": {
+      "action_type": "replay_test_set_then_open_retrain_candidate",
+      "priority": "high",
+      "reason": "Critical drift detected. Human approval is required before dispatching replay/retrain workflow.",
+      "queue_task": "replay_test",
+      "touches_production": true
+    },
+    "comms_summary": null,
+    "requires_human_approval": true
+  }
+}

@@ -36,8 +36,22 @@ def calculate_chi_square(reference_values, current_values) -> dict:
         f_exp=expected
     )
 
+    p_value = float(p_value)
+    statistic = float(statistic)
+    drifted = p_value < 0.05
+
+    if p_value < 0.001:
+        severity = "HIGH"
+    elif p_value < 0.05:
+        severity = "MEDIUM"
+    else:
+        severity = "LOW"
+
     return {
-        "chi_square_statistic": float(statistic),
-        "p_value": float(p_value),
-        "drift_detected": bool(p_value < 0.05)
+        "chi_square": statistic,
+        "chi_square_statistic": statistic,
+        "p_value": p_value,
+        "drift_detected": bool(drifted),
+        "is_drifted": bool(drifted),
+        "severity": severity,
     }

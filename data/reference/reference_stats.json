@@ -596,9 +596,9 @@
     "threshold": 0.385,
     "positive_prediction_rate": 0.34189867270961477,
     "negative_prediction_rate": 0.6581013272903853,
-    "mean_probability": 0.39342659808873487,
-    "min_probability": 0.019393118364474958,
-    "max_probability": 0.9860167290217906,
+    "mean_probability": 0.39342659809883873,
+    "min_probability": 0.01939311841225731,
+    "max_probability": 0.9860167289690754,
     "count": 24712
   }
 }

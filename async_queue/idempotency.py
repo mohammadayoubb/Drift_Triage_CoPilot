@@ -13,21 +13,25 @@ from async_queue.redis_client import get_redis_client
 class IdempotencyStore:
     """
     Stores idempotency keys in Redis.
+
+    namespace="idempotency"  — used by the worker to track completed jobs
+    namespace="queued"       — used by approval_service to prevent double-enqueue
     """
 
-    def __init__(self):
+    def __init__(self, namespace: str = "idempotency"):
         self.redis_client = get_redis_client()
+        self.namespace = namespace
 
     def already_seen(self, key: str) -> bool:
         """
         Return True if this idempotency key already exists.
         """
 
-        return self.redis_client.exists(f"idempotency:{key}") == 1
+        return self.redis_client.exists(f"{self.namespace}:{key}") == 1
 
     def mark_seen(self, key: str) -> None:
         """
         Mark an idempotency key as seen.
         """
 
-        self.redis_client.set(f"idempotency:{key}", "seen")
+        self.redis_client.set(f"{self.namespace}:{key}", "seen")

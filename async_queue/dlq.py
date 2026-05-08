@@ -7,6 +7,8 @@ Jobs that fail too many times are moved to the DLQ so they are not lost and can
 be inspected from the dashboard later.
 """
 
+import json
+
 from async_queue.redis_client import get_redis_client
 
 
@@ -23,17 +25,20 @@ class DeadLetterQueue:
 
     def push(self, failed_job: dict) -> None:
         """
-        Add a failed job to the DLQ.
+        Add a failed job to the DLQ as a JSON string.
         """
 
-        self.redis_client.rpush(
-            DLQ_NAME,
-            str(failed_job)
-        )
+        self.redis_client.rpush(DLQ_NAME, json.dumps(failed_job))
 
-    def list_failed(self) -> list[str]:
+    def list_failed(self) -> list[dict]:
         """
-        Return all failed jobs currently in the DLQ.
+        Return all failed jobs in the DLQ as decoded dicts.
         """
 
-        return self.redis_client.lrange(DLQ_NAME, 0, -1)
+        items = []
+        for raw in self.redis_client.lrange(DLQ_NAME, 0, -1):
+            try:
+                items.append(json.loads(raw))
+            except Exception:
+                items.append({"raw": str(raw)})
+        return items

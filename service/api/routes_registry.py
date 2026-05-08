@@ -33,6 +33,14 @@ def get_production_model():
     return registry.get_current_production_model()
 
 
+@router.get("/registry/candidate")
+def get_candidate_model():
+    """
+    Return the latest Staging (candidate) model version, or null if none registered.
+    """
+    return registry.get_candidate_model()
+
+
 @router.post("/registry/promote", response_model=PromotionResponse)
 def promote_model(request: PromotionRequest):
     """
